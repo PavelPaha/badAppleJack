@@ -1,0 +1,18 @@
+class Main {
+    function void main() {
+        var VideoPlayer videoPlayer;
+        var Array videoFrames;
+        var int frameCount, screenWidth, screenHeight, fps;
+
+        let frameCount = 5;
+        let screenWidth = 50;
+        let screenHeight = 38;
+        let fps = 1;
+        let videoPlayer = VideoPlayer.new();
+        let videoFrames = videoPlayer.loadBitmapsFromFile("bytes.txt");
+        do videoPlayer.init(videoFrames, frameCount, screenWidth, screenHeight, fps);
+        do videoPlayer.play();
+        return;
+    }
+}
+    

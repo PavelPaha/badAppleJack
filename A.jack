@@ -1,0 +1,71 @@
+class VideoPlayer {
+    int[] videoFrames;
+    int frameCount;
+    int currentFrame;
+    int screenWidth, screenHeight;
+    int i, j, sleepTime;
+
+    function void init(int[] frames, int frameCount, int screenWidth, int screenHeight, int fps) {
+        let this.videoFrames = frames;
+        let this.frameCount = frameCount;
+        let this.screenWidth = screenWidth;
+        let this.screenHeight = screenHeight;
+        let this.currentFrame = 0;
+        let this.sleepTime = 1000 / fps;
+    }
+
+    function void play() {
+        while (currentFrame < frameCount) {
+            let i = 0;
+            while (i < screenHeight) {
+                let j = 0;
+                while (j < screenWidth) {
+                    if (videoFrames[currentFrame * screenHeight * screenWidth + i * screenWidth + j] == 1) {
+                        do Screen.drawPixel(j, i);
+                    } else {
+                        do Screen.clearPixel(j, i);
+                    }
+                    let j = j + 1;
+                }
+                let i = i + 1;
+            }
+            do Sys.wait(sleepTime);
+            let currentFrame = currentFrame + 1;
+        }
+    }
+
+    function int[] loadBitmapsFromFile(String fileName) {
+        var File file;
+        var int fileLength, frameCount, i, j;
+        var int[] frames;
+        var String line;
+
+        // Открываем файл
+        do File.open(file, fileName, "r");
+        let fileLength = File.size(file);
+
+        // Считываем количество кадров
+        let line = File.readLine(file);
+        let frameCount = StringUtil.stringToInt(line);
+        do Array.new(frames, frameCount * screenHeight * screenWidth);
+
+        // Считываем битовые карты для каждого кадра
+        let i = 0;
+        while (i < frameCount) {
+            let j = 0;
+            while (j < screenHeight) {
+                let line = File.readLine(file);
+                let k = 0;
+                while (k < screenWidth) {
+                    let frames[i * screenHeight * screenWidth + j * screenWidth + k] = StringUtil.stringToInt(StringUtil.charAt(line, k * 2));
+                    let k = k + 1;
+                }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+
+        do File.close(file);
+        return frames;
+    }
+}
